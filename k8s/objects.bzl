@@ -22,13 +22,26 @@ def _runfiles(ctx, f):
     return "PYTHON_RUNFILES=${RUNFILES} ${RUNFILES}/%s $@" % _get_runfile_path(ctx, f)
 
 def _run_all_impl(ctx):
+    if ctx.attr.continue_on_error:
+        statements = "\n".join([
+            "EXIT_STATUS=0",
+            "set +e",
+            "{}",
+            "set -e",
+            "exit $EXIT_STATUS",
+        ]).format(("; status=$?; [[ $status != 0 ]] && EXIT_STATUS=$status\n" + ctx.attr.delimiter).join([
+            _runfiles(ctx, exe.files_to_run.executable)
+            for exe in ctx.attr.objects
+        ] + [""]))
+    else:
+        statements = ("\n" + ctx.attr.delimiter).join([
+            _runfiles(ctx, exe.files_to_run.executable)
+            for exe in ctx.attr.objects
+        ])
     ctx.actions.expand_template(
         template = ctx.file._template,
         substitutions = {
-            "%{resolve_statements}": ("\n" + ctx.attr.delimiter).join([
-                _runfiles(ctx, exe.files_to_run.executable)
-                for exe in ctx.attr.objects
-            ]),
+            "%{resolve_statements}": statements,
         },
         output = ctx.outputs.executable,
     )
@@ -49,6 +62,7 @@ _run_all = rule(
         "objects": attr.label_list(
             cfg = "target",
         ),
+        "continue_on_error": attr.bool(default = False),
         "_template": attr.label(
             default = Label("//k8s:resolve-all.sh.tpl"),
             allow_single_file = True,
@@ -100,4 +114,4 @@ def k8s_objects(name, objects, **kwargs):
     _run_all(name = name + ".delete", objects = _cmd_objects(".delete", objects, True), **kwargs)
     _run_all(name = name + ".replace", objects = _cmd_objects(".replace", objects), **kwargs)
     _run_all(name = name + ".apply", objects = _cmd_objects(".apply", objects), **kwargs)
-    _run_all(name = name + ".diff", objects = _cmd_objects(".diff", objects), **kwargs)
+    _run_all(name = name + ".diff", objects = _cmd_objects(".diff", objects), continue_on_error=True, **kwargs)
