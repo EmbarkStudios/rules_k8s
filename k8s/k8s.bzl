@@ -51,9 +51,9 @@ def k8s_repositories():
         http_archive,
         name = "com_github_yaml_pyyaml",
         build_file_content = _com_github_yaml_pyyaml_build_file,
-        sha256 = "e9df8412ddabc9c21b4437ee138875b95ebb32c25f07f962439e16005152e00e",
-        strip_prefix = "pyyaml-5.1.2",
-        urls = ["https://github.com/yaml/pyyaml/archive/5.1.2.zip"],
+        sha256 = "3f11e50a10e70d481fc4c16880a605ee5f955e17eba2673a0bf15f4f40e3f7ef",
+        strip_prefix = "pyyaml-5.4.1",
+        urls = ["https://github.com/yaml/pyyaml/archive/5.4.1.zip"],
     )
 
     # Register the default kubectl toolchain targets for supported platforms
@@ -62,47 +62,47 @@ def k8s_repositories():
         "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_linux_amd64_toolchain",
         "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_linux_arm64_toolchain",
         "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_linux_s390x_toolchain",
-        "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_osx_toolchain",
+        "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_macos_x86_64_toolchain",
+        "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_macos_arm64_toolchain",
         "@io_bazel_rules_k8s//toolchains/kubectl:kubectl_windows_toolchain",
     )
 
     maybe(
         http_archive,
         name = "io_bazel_rules_go",
-        sha256 = "52d0a57ea12139d727883c2fef03597970b89f2cc2a05722c42d1d7d41ec065b",
+        sha256 = "685052b498b6ddfe562ca7a97736741d87916fe536623afb7da2824c0211c369",
         urls = [
-            "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.24.13/rules_go-v0.24.13.tar.gz",
-            "https://github.com/bazelbuild/rules_go/releases/download/v0.24.13/rules_go-v0.24.13.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.33.0/rules_go-v0.33.0.zip",
+            "https://github.com/bazelbuild/rules_go/releases/download/v0.33.0/rules_go-v0.33.0.zip",
         ],
     )
 
     maybe(
         http_archive,
         name = "bazel_gazelle",
-        sha256 = "222e49f034ca7a1d1231422cdb67066b885819885c356673cb1f72f748a3c9d4",
+        sha256 = "de69a09dc70417580aabf20a28619bb3ef60d038470c7cf8442fafcf627c21cb",
         urls = [
-            "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.22.3/bazel-gazelle-v0.22.3.tar.gz",
-            "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.22.3/bazel-gazelle-v0.22.3.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.24.0/bazel-gazelle-v0.24.0.tar.gz",
+            "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.24.0/bazel-gazelle-v0.24.0.tar.gz",
         ],
     )
 
     maybe(
         http_archive,
         name = "io_bazel_rules_docker",
-        sha256 = "efda18e39a63ee3c1b187b1349f61c48c31322bf84227d319b5dece994380bb6",
-        strip_prefix = "rules_docker-f929d80c5a4363994968248d87a892b1c2ef61d4",
-        # `master` as of 2021-04-25
-        urls = [
-            "https://github.com/bazelbuild/rules_docker/archive/f929d80c5a4363994968248d87a892b1c2ef61d4.tar.gz",
-        ],
+        sha256 = "27d53c1d646fc9537a70427ad7b034734d08a9c38924cc6357cc973fed300820",
+        strip_prefix = "rules_docker-0.24.0",
+        urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.24.0/rules_docker-v0.24.0.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        sha256 = "7ac0fa88c0c4ad6f5b9ffb5e09ef81e235492c873659e6bb99efb89d11246bcb",
-        strip_prefix = "bazel-skylib-1.0.3",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/archive/1.0.3.tar.gz"],
+        sha256 = "c6966ec828da198c5d9adbaa94c05e3a1c7f21bd012a0b29ba8ddbccb2c93b0d",
+        urls = [
+            "https://github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
+        ],
     )
 
     # WORKSPACE target to configure the kubectl tool

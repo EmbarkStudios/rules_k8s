@@ -14,7 +14,7 @@
 
 load(":kubectl_toolchain.bzl", "kubectl_toolchain")
 
-package(default_visibility = ["//visibility:private"])
+package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
 
@@ -35,8 +35,8 @@ kubectl_toolchain(
 toolchain(
     name = "kubectl_linux_amd64_toolchain",
     target_compatible_with = [
-        "@bazel_tools//platforms:linux",
-        "@bazel_tools//platforms:x86_64",
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
     ],
     toolchain = "@k8s_config//:toolchain",
     toolchain_type = ":toolchain_type",
@@ -45,8 +45,8 @@ toolchain(
 toolchain(
     name = "kubectl_linux_s390x_toolchain",
     target_compatible_with = [
-        "@bazel_tools//platforms:linux",
-        "@bazel_tools//platforms:s390x",
+        "@platforms//os:linux",
+        "@platforms//cpu:s390x",
     ],
     toolchain = "@k8s_config//:toolchain",
     toolchain_type = ":toolchain_type",
@@ -55,18 +55,33 @@ toolchain(
 toolchain(
     name = "kubectl_linux_arm64_toolchain",
     target_compatible_with = [
-        "@bazel_tools//platforms:linux",
-        "@bazel_tools//platforms:aarch64",
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
     ],
     toolchain = "@k8s_config//:toolchain",
     toolchain_type = ":toolchain_type",
 )
 
 toolchain(
-    name = "kubectl_osx_toolchain",
+    name = "kubectl_macos_x86_64_toolchain",
     target_compatible_with = [
-        "@bazel_tools//platforms:osx",
-        "@bazel_tools//platforms:x86_64",
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "@k8s_config//:toolchain",
+    toolchain_type = ":toolchain_type",
+)
+
+alias(
+    name = "kubectl_osx_toolchain",
+    actual = ":kubectl_macos_x86_64_toolchain",
+)
+
+toolchain(
+    name = "kubectl_macos_arm64_toolchain",
+    target_compatible_with = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
     ],
     toolchain = "@k8s_config//:toolchain",
     toolchain_type = ":toolchain_type",
@@ -75,8 +90,8 @@ toolchain(
 toolchain(
     name = "kubectl_windows_toolchain",
     target_compatible_with = [
-        "@bazel_tools//platforms:windows",
-        "@bazel_tools//platforms:x86_64",
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
     ],
     toolchain = "@k8s_config//:toolchain",
     toolchain_type = ":toolchain_type",

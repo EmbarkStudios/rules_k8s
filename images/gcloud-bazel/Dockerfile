@@ -14,12 +14,28 @@
 
 # Ubuntu with bazel, gcloud and its dependencies preinstalled.
 
-ARG NEW_VERSION
-ARG OLD_VERSION
-FROM launcher.gcr.io/google/bazel:${OLD_VERSION} as old
-FROM launcher.gcr.io/google/bazel:${NEW_VERSION}
+FROM ubuntu:20.04
 # Based off github.com/kubernetes/test-infra/images/bazelbuild
 LABEL maintainer="fejta@google.com"
+
+# See https://docs.bazel.build/versions/main/install-ubuntu.html
+RUN apt update \
+    && apt install -y --no-install-recommends \
+       gnupg \
+       ca-certificates
+# curl -fsSL https://bazel.build/bazel-release.pub.gpg -o bazel.pub.gpg
+COPY bazel.pub.gpg bazel.list /
+RUN gpg -o /usr/share/keyrings/bazel-archive-keyring.gpg --dearmor /bazel.pub.gpg \
+    && rm /bazel.pub.gpg \
+    && mv /bazel.list /etc/apt/sources.list.d/bazel.list
+
+ARG NEW_VERSION
+ARG OLD_VERSION
+RUN apt update \
+    && apt install -y --no-install-recommends \
+       "bazel" \
+       "bazel-${NEW_VERSION}" \
+       "bazel-${OLD_VERSION}"
 
 # See the following docs:
 # * https://cloud.google.com/sdk/docs/install#deb
@@ -37,14 +53,17 @@ COPY sources.list /etc/apt/sources.list.d/google-cloud-sdk.list
 # * kubectl: needed by rules_k8s
 # * pip setuptools wheel: needed by python rules
 # * python-pip: needed by python rules
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+# * git: some WORKSPACE rules
+# * curl: used by e2e tests
+# * patch: used by grpc
+RUN apt update \
+    && apt install -y --no-install-recommends \
       google-cloud-sdk \
+      google-cloud-sdk-gke-gcloud-auth-plugin \
       kubectl \
-      python-pip \
+      python3-pip \
+      git \
+      patch \
+      curl \
     && apt-get clean \
     && pip install pip setuptools wheel
-
-ARG OLD_VERSION
-COPY --from=old \
-  /usr/local/lib/bazel/bin/bazel-real /usr/local/lib/bazel/bin/bazel-${OLD_VERSION}
